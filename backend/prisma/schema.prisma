@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model employees {
+  id       Int     @id(map: "PK__employee__3213E83F93C97840") @default(autoincrement())
+  name     String  @db.NVarChar(100)
+  email    String  @unique(map: "UQ__employee__AB6E6164E6184BD8") @db.NVarChar(100)
+  phone    String? @db.NVarChar(20)
+  position String? @db.NVarChar(100)
+  address  String? @db.NVarChar(255)
+}
+
+model fs_lap {
+  id_lap Int      @id(map: "PK_fs_lap") @default(autoincrement())
+  kode   String?  @db.VarChar(5)
+  nama   String?  @db.VarChar(100)
+  harga  Float?   @db.Money
+  status Int?
+  fs_trs fs_trs[]
+}
+
+model fs_trs {
+  id_trs        Int       @id(map: "PK_fs_trs") @default(autoincrement())
+  id_lap        Int?
+  nama_peminjam String?   @db.VarChar(255)
+  begin_time    DateTime? @db.DateTime
+  end_time      DateTime? @db.DateTime
+  total_harga   Float?    @db.Money
+  status        Int?
+  created_at    DateTime? @db.DateTime
+  fs_lap        fs_lap?   @relation(fields: [id_lap], references: [id_lap], onDelete: NoAction, onUpdate: NoAction, map: "FK_fs_trs_fs_lap")
+}
+
+model Karyawan {
+  id        Int      @id @default(autoincrement())
+  nama      String?  @db.NVarChar(100)
+  email     String?  @unique @db.NVarChar(100)
+  jabatan   String?  @db.NVarChar(100)
+  gaji      Int?
+  createdAt DateTime @default(now())
+
+  @@map("karyawan")
+}
